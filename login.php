@@ -5,9 +5,13 @@ require "config.php";
 $errors = array();
 
 if (isset($_POST['submit'])) {
-  if ($_POST['email'] == "" or $_POST['password'] == "") {
-    $errors[] = "Some inputs are empty";
-  } else {
+  if ($_POST['email'] == "" ) {
+    $errors[] = "email input are empty";
+  }
+  elseif($_POST['password'] == ""){
+    $errors[] = "password input are empty";
+  }
+  else {
     $email = isset($_POST['email']) ? htmlspecialchars($_POST['email']) : "";
     $password = isset($_POST['password']) ? htmlspecialchars($_POST['password']) : "";
 

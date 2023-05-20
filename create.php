@@ -2,6 +2,10 @@
 require "includes/header.php";
 require "config.php";
 
+if (!isset($_SESSION['username'])) {
+    header("location: login.php");
+}
+
 $errors = array();
 
 if (isset($_POST['submit'])) {
@@ -11,7 +15,7 @@ if (isset($_POST['submit'])) {
         // Perform individual validations for each field
         if (strlen($_POST['title']) < 10) {
             $errors[] = "Title must be at least 5 characters long";
-        } elseif (strlen($_POST['body']) < 200) {
+        } elseif (strlen($_POST['body']) < 50) {
             $errors[] = "Body must be at least 200 characters long";
         } else {
             // All fields are valid, proceed with further processing
@@ -19,12 +23,13 @@ if (isset($_POST['submit'])) {
             $body = isset($_POST['body']) ? htmlspecialchars($_POST['body']) : '';
             $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : '';
 
-            $insert = $conn->prepare("INSERT INTO posts (title, body, username) VALUES (:title, :body)");
+            $insert = $conn->prepare("INSERT INTO posts (title, body, username) VALUES (:title, :body, :username)");
             $insert->execute([
                 ":title" => $title,
                 ":body" => $body,
                 ":username" => $username
             ]);
+            header("location: index.php");
         }
     }
 }
@@ -40,7 +45,7 @@ if (isset($_POST['submit'])) {
             <div class="alert alert-danger" role="alert">
                 <ul>
                     <?php foreach ($errors as $error) : ?>
-                        <li><?= $error ?></li>
+                        <li><?= $error ?></li><br>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -57,7 +62,6 @@ if (isset($_POST['submit'])) {
         </div>
 
         <button name="submit" class="w-100 btn btn-lg btn-primary mt-5" type="submit">Create Post</button>
-        <h6 class="mt-3">Aleardy have an account? <a href="login.php">Login</a></h6>
 
     </form>
 </main>

@@ -3,12 +3,14 @@ require "includes/header.php";
 require "config.php";
 
 //validar errores
-
 $errors = array();
-
 if (isset($_POST['submit'])) {
-  if ($_POST['email'] == '' or $_POST['username'] == '' or $_POST['password'] == '') {
-    $errors[] = "Some inputs are empty";
+  if ($_POST['email'] == '') {
+    $errors[] = "email input are empty";
+  } elseif ($_POST['username'] == '') {
+    $errors[] = "user name input are empty";
+  } elseif ($_POST['password'] == '') {
+    $errors[] = "password  input are empty";
   } else {
     // Perform individual validations for each field
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
