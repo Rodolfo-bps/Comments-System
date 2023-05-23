@@ -1,27 +1,8 @@
 <?php
 require "includes/header.php";
 require "config.php";
-
-$id = isset($_GET['id']) ? $_GET['id'] : null;
-$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT); // Ejemplo de sanitización como número entero
-
-// Validación adicional
-if (!is_numeric($id) || $id < 1 || $id > 100) {
-    exit("ID inválido.");
-    header("location: index.php");
-}
-
-$onePost = $conn->prepare("SELECT * FROM posts WHERE id=:id");
-$onePost->bindParam(":id", $id, PDO::PARAM_INT);
-$onePost->execute();
-$posts = $onePost->fetch(PDO::FETCH_OBJ);
-
-// Verificar si se encontraron resultados
-if (!$posts) {
-    exit("No se encontró el post.");
-}
+include "control/show.php";
 ?>
-
 <h1 class="text-center mt-3"> POSTS</h1>
 <div class="row">
     <div class="col-2"></div>
@@ -39,5 +20,43 @@ if (!$posts) {
     </div>
     <div class="col-2"></div>
 </div>
-
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <form method="POST" id="comment_data">
+            <h5 class="h3 mt-5 fw-normal text-center">Create Post</h5>
+            <div class="form-floating">
+                <input name="username" value="<?= $_SESSION['username'] ?>" type="hidden" class="form-control" id="username">
+            </div>
+            <div class="form-floating">
+                <input name="post_id" value="<?= $posts->id ?>" type="hidden" class="form-control" id="post_id" >
+            </div>
+            <div class="form-floating mt-4">
+                <textarea name="comment" id="" cols="30" rows="10" placeholder="comment" class="form-control" id="comment"></textarea>
+                <label for="floatingPassword">Comment</label>
+            </div>
+            <button name="submit" class="w-100 btn btn-lg btn-primary mt-5" type="submit">Create Comment</button>
+        </form>
+    </div>
+    <div class="col-2"></div>
+</div>
 <?php require "includes/footer.php"; ?>
+
+<script>
+    $(document).ready(function(){
+        $(document).on('submit', function(){
+            //alert("form submitted");
+            var formdata = $("#comment_data").serialize()+'&submit=submit';
+
+            $.ajax({
+                type: 'post',
+                url: 'insert-comments.php',
+                data: formdata,
+
+                success: function(){
+                    alert("Succes");
+                }
+            })
+        });
+    })
+</script>
