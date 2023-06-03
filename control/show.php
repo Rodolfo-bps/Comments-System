@@ -18,3 +18,8 @@ $posts = $onePost->fetch(PDO::FETCH_OBJ);
 if (!$posts) {
     exit("No se encontró el post.");
 }
+
+$comments = $conn->prepare("SELECT * FROM comments WHERE post_id=:id");
+$comments->bindParam(":id", $id, PDO::PARAM_INT);
+$comments->execute();
+$comment = $comments->fetchAll(PDO::FETCH_OBJ);

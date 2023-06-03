@@ -9,15 +9,13 @@ if (isset($_POST['submit'])) {
     $post_id = isset($_POST['post_id']) ? htmlspecialchars($_POST['post_id']) : '';
     $comment = isset($_POST['comment']) ? htmlspecialchars($_POST['comment']) : '';
 
-    $insert = $conn->prepare("INSERT INTO users (username, post_id, comment) VALUES (:username, :post_id,:comment)");
+    $insert = $conn->prepare("INSERT INTO comments (username, post_id, comment) VALUES (:username, :post_id,:comment)");
     $insert->execute([
         ":username" => $username,
         ":post_id" => $post_id,
         ":comment" => $comment, 
     ]);
 }
-
-
 ?>
 
 <?php if (!empty($errors)) : ?>
