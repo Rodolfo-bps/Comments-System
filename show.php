@@ -13,7 +13,20 @@ include "control/show.php";
             <div class="card-body">
                 <h5 class="card-title"><?= $posts->title ?></h5>
                 <p class="card-text"><?= $posts->body ?></p>
-                <p style="font-size:12px ;">Fecha de creacion <?= $posts->created_at ?></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p style="font-size:12px ;">Fecha de creacion <?= $posts->created_at ?></p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <form id="form-data" method="post">
+                            <div class="my-rating">
+                            </div>
+                            <input type="hidden" id="rating" name="rating" value="">
+                            <input id="post_id" name="post_id" type="hidden" value="<?= $posts->id ?>">
+                            <input id="user_id" name="user_id" type="hidden" value="<?= $_SESSION['user_id'] ?>">
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         <form method="POST" id="comment_data">
@@ -42,10 +55,10 @@ include "control/show.php";
                 <div class="card-body">
                     <p class="card-text"><?= $singleComment->comment ?></p>
                     <p style="font-size:12px ;">Fecha de creacion <?= $singleComment->created_at ?></p>
-                    <?php if(isset($_SESSION['username']) && $_SESSION['username'] == $singleComment->username): ?>
-                    <button id="delete-btn" value="<?= $singleComment->id ?>" class="btn btn-danger">Delete</button>
+                    <?php if (isset($_SESSION['username']) && $_SESSION['username'] == $singleComment->username) : ?>
+                        <button id="delete-btn" value="<?= $singleComment->id ?>" class="btn btn-danger">Delete</button>
                     <?php endif; ?>
-               
+
                 </div>
 
             </div>
@@ -76,14 +89,15 @@ include "control/show.php";
                     $("#username").val(null);
                     $("#post_id").val(null);
 
-                    $("#msg").html("Added Successfully").toggleClass("alert alert-success bg-success text-white ");
+                    $("#msg").html("Added Successfully").toggleClass(
+                        "alert alert-success bg-success text-white ");
                     fetch();
                 }
             });
         });
 
         $("#delete-btn").on('click', function(e) {
-            
+
             e.preventDefault();
             var id = $(this).val();
 
@@ -96,7 +110,8 @@ include "control/show.php";
                 },
                 success: function() {
                     //alert(id);
-                    $("#delete-msg").html("Delete Successfully").toggleClass("alert alert-danger bg-danger text-white ");
+                    $("#delete-msg").html("Delete Successfully").toggleClass(
+                        "alert alert-danger bg-danger text-white ");
                     fetch();
                 }
             });
@@ -107,5 +122,36 @@ include "control/show.php";
                 $("body").load("show.php?id=<?= $_GET['id'] ?>")
             }, 4000);
         }
+
+        $(".my-rating").starRating({
+            starSize: 25,
+            initialRating: <?php
+                            if (isset($rating->ratings) and isset($rating->user_id) and $rating->user_id == $_SESSION['user_id']) {
+                                echo $rating->ratings;
+                            } else {
+                                echo '0';
+                            }
+                            ?>,
+            callback: function(currentRating, $el) {
+                // hacer una llamada al servidor aquí
+                $("#rating").val(currentRating);
+
+                $(".my-rating").click(function(e) {
+                    e.preventDefault();
+
+                    var formdata = $("#form-data").serialize() + '&insert=insert';
+
+                    $.ajax({
+                        type: "POST",
+                        url: 'insert-ratings.php',
+                        data: formdata,
+                        success: function() {
+                            //alert(formdata);
+                        }
+                    });
+                });
+            }
+        });
+
     })
 </script>

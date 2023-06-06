@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT); // Ejemplo de sanitización como número entero
@@ -19,7 +19,14 @@ if (!$posts) {
     exit("No se encontró el post.");
 }
 
-$comments = $conn->prepare("SELECT * FROM comments WHERE post_id=:id");
+$comments = $conn->prepare("SELECT * FROM comments WHERE post_id = :id");
 $comments->bindParam(":id", $id, PDO::PARAM_INT);
 $comments->execute();
 $comment = $comments->fetchAll(PDO::FETCH_OBJ);
+
+$ratings = $conn->prepare("SELECT * FROM rates WHERE post_id = :id AND user_id = '$_SESSION[user_id]'");
+$ratings->bindParam(":id", $id, PDO::PARAM_INT);
+$ratings->execute();
+$rating = $ratings->fetch(PDO::FETCH_OBJ);
+
+print_r($rating);

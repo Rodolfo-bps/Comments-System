@@ -19,6 +19,7 @@ if (isset($_POST['submit'])) {
         if ($login->rowCount() > 0) {
             if (password_verify($password, $data['mypassword'])) {
                 $_SESSION['username'] = $data['username'];
+                $_SESSION['user_id'] = $data['id'];
                 $_SESSION['email'] = $data['email'];
                 header("location: index.php");
                 exit();

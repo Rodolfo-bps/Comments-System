@@ -18,13 +18,8 @@ session_start();
   <title>Blog</title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/carousel/">
-
-
-
-
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css
-" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="rating-plugin/src/css/star-rating-svg.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
   <meta name="theme-color" content="#712cf9">
